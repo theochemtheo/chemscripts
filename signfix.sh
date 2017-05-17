@@ -22,6 +22,6 @@ for i in $( cat sign.lst ); do
 	TARMAT=$( echo "$BN.diabmat" )
 	# Print progress to terminal
 	echo "Reformatting $BN"
-	# use the reforming octave script 
-	octave -qf ~/bin/SIGNFIX-DIABMAT.m $MASKNAME $TARMAT $OUTNAME
+	# use the reforming octave script
+	octave -qf ~/bin/chemscripts/SIGNFIX-DIABMAT.m $MASKNAME $TARMAT $OUTNAME
 done

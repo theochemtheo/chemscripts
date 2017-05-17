@@ -31,6 +31,6 @@ for i in $( cat perm.lst ); do
 	EREL=$( awk -v s="$2" '/ion met/ {printf "% 1.10f",$2-s}' $BN.out )
 	# Print progress to terminal
 	echo "Reformatting $BN"
-	# use the reforming octave script 
-	octave -qf ~/bin/CROSSOVER-CHECK+EREL.m $ONAME $NNAME $i $OUTMAT $EREL
+	# use the reforming octave script
+	octave -qf ~/bin/chemscripts/CROSSOVER-CHECK+EREL.m $ONAME $NNAME $i $OUTMAT $EREL
 done
