@@ -12,7 +12,7 @@
 % This can be done using the scripts "G09-EXTRACT_hpmodes_freqlist.sh" and "Qchem44-EXTRACT_NACME.sh"
 %
 % The frequencies must be in the following format:
-% number of mode [tab] frequency in wavenumbers 
+% number of mode [tab] frequency in wavenumbers
 % The NACMEs must be in the following format:
 % x-force [tab] y-force [tab] z-force
 % and must be named [name].[MI]-to-[MJ].[type].mat, where [MI] and [MJ] are the multiplicity and index of states I and J respecitively, and [type] is the kind of NACME (e.g. gradient difference or derivative coupling with or without ETF)
@@ -33,11 +33,11 @@ basenameNACME = arg_list{2};
 % set up search strings for the various files
 searchstrDCnoETF = sprintf('%s*DCnoETF.dist',basenameNACME);
 searchstrDCwithETF = sprintf('%s*DCwithETF.dist',basenameNACME);
-searchstrGD = sprintf('%s*GD.dist',basenameNACME);
+searchstrNACV = sprintf('%s*NACV.dist',basenameNACME);
 
 % construct sorted lists of the different types of files
 listDCnoETF=sort_nat(glob(searchstrDCnoETF));
-listGD=sort_nat(glob(searchstrGD));
+listNACV=sort_nat(glob(searchstrNACV));
 listDCwithETF=sort_nat(glob(searchstrDCwithETF));
 
 FREQS = dlmread(freqlist);
@@ -66,10 +66,10 @@ for i = 1:length(listDCnoETF);
 	dlmwrite(output,scaleddistNACME,'\t','precision','% 1.7e');
 endfor
 
-% start looping through the GD files
-for i = 1:length(listGD);
+% start looping through the NACV files
+for i = 1:length(listNACV);
 	% Name of the file containing this vector
-	nameNACME = listGD{i,1};
+	nameNACME = listNACV{i,1};
 	% Trim the name of .mat
 	trimNACME = nameNACME(1:end-5);
 	% Name of the two outputs

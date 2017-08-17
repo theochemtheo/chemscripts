@@ -8,7 +8,7 @@
 %  + extract the high-precision, (Frobenius) normalized, mass-weighted cartesian displacement matrices for the normal modes.
 %  + extract the non-adiabatic coupling vectors.
 % This can be done using the scripts "G09-EXTRACT_hpmodes.sh" and "Qchem44-EXTRACT_NACME.sh"
-% 
+%
 % The normal modes must be in the following format:
 % x-displacement [tab] y-displacement [tab] z-displacement
 % and must be named [name].m[number].dat, where [number] is the number for the mode. The matrices should be Frobenius normalized.
@@ -30,12 +30,12 @@ basenameNACME = arg_list{2};
 searchstrFREQ = sprintf('%s*dat',basenameFREQ);
 searchstrDCnoETF = sprintf('%s*DCnoETF.mat',basenameNACME);
 searchstrDCwithETF = sprintf('%s*DCwithETF.mat',basenameNACME);
-searchstrGD = sprintf('%s*GD.mat',basenameNACME);
+searchstrNACV = sprintf('%s*NACV.mat',basenameNACME);
 
 % construct sorted lists of the different types of files
 listFREQ=sort_nat(glob(searchstrFREQ));
 listDCnoETF=sort_nat(glob(searchstrDCnoETF));
-listGD=sort_nat(glob(searchstrGD));
+listNACV=sort_nat(glob(searchstrNACV));
 listDCwithETF=sort_nat(glob(searchstrDCwithETF));
 
 % start looping through the DCnoETF files
@@ -62,9 +62,9 @@ for i = 1:length(listDCnoETF);
 endfor
 
 % start looping through the DCnoETF files
-for i = 1:length(listGD);
+for i = 1:length(listNACV);
 	% Name of the file containing this vector
-	nameNACME = listGD{i,1};
+	nameNACME = listNACV{i,1};
 	% Trim the name of .mat
 	trimNACME = nameNACME(1:end-4);
 	% Name of the output
