@@ -5,14 +5,17 @@
 
 1;
 
-% set up array of arguments supplied
-arg_list= argv ();
+% get the arguments out as the right kind of type
+cola = str2num(argv(){1});
+colb = str2num(argv(){2});
+inmatname = argv(){3};
+outmatname = argv(){4};
 
 % read in the input matrix
-swapmat = dlmread(arg_list{3});
+swapmat = dlmread(inmatname);
 
 % swap column a for column b
-swapmat(:,[arg_list{2} arg_list{1}]) = swapmat(:,[arg_list{1} arg_list{2}]);
+swapmat(:,[colb cola]) = swapmat(:,[cola colb]);
 
 % write the output
-dlmwrite(arg_list{4},swapmat,'\t','precision','% 1.5f');
+dlmwrite(outmatname,swapmat,'\t','precision','% 1.5f');
