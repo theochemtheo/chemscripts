@@ -77,7 +77,7 @@ endfor
 cell2csv (NACVout,magNACME)
 
 % Initialize magNACME
-magNACME = cell(length(listNACV),2);
+magNACME = cell(length(listDCwithETF),2);
 % start looping through the DCnoETF files
 for i = 1:length(listDCwithETF);
 	% Name of the file containing this vector
