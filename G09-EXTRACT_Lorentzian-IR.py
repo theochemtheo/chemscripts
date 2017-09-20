@@ -74,18 +74,33 @@ for count, peak in enumerate(parsedfile.vibfreqs):
     thispeak = Lorentzian(x, peak, parsedfile.vibirs[count], args["fwhm"])
     composite += thispeak
 
-# If
+# If saving has been asked for
+if args["save"] is not None:
+    with open(args["save"], 'w') as csv:
+        # Print a pre-amble so that csv is human readable
+        csv.write("# Extracted & convoluted IR spectrum, with Lorentzian lineshapes, FWHM = {} cm-1\n".format(args["fwhm"]))
+        csv.write("# x / cm-1; epsilon / L mol-1 cm-1; vib. freq. / cm-1; intensity / km mol-1\n")
+        for each in range(max(len(x), len(parsedfile.vibfreqs))):
+            try:
+                csv.write("{},{},{},{}\n".format(x[each], composite[each], parsedfile.vibfreqs[each], parsedfile.vibirs[each]))
+            except IndexError:
+                if len(x) > len(parsedfile.vibfreqs):
+                    csv.write("{},{}\n".format(x[each], composite[each]))
+                else:
+                    csv.write("{},{}\n".format(parsedfile.vibfreqs[each], parsedfile.vibirs[each]))
+
+# If not in quiet mode
 if args["quiet"] is None:
     # Set up the plot
     fig, ax1 = plt.subplots()
+    # Axis 1 is the convoluted IR spectrum
     ax1.plot(x, composite)
     plt.xlabel('Frequency / cm$^{-1}$')
     ax1.set_ylabel('Molar absorption coefficient, $\epsilon$ / L mol$^{-1}$ cm$^{-1}$')
+    # Axis 2 is the stick spectrum, which shares the x axis
     ax2 = ax1.twinx()
     ax2.vlines(parsedfile.vibfreqs, 0, parsedfile.vibirs)
     ax2.set_ylabel('IR intensity / km mol$^{-1}$')
+    # Change formatting and plot
     fig.tight_layout()
     plt.show()
-
-if args["save"] is not None:
-    print("blargh")
