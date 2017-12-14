@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 USAGE="Usage: command input, where input is the name of a (non-spin-flip) Qchem 4.4 calculation including the CIS/TDA derivative couplings"
 
@@ -85,7 +85,7 @@ if grep -i -q "cis_der_numstate" $1; then
 			# Adjust params to for GD
 			READOUTSTART=$(( $READOUTEND + 5 ))
 			READOUTEND=$(( READOUTSTART + $NATOMS ))
-			awk -v s="$SEARCHSTR" -v n="$READOUTSTART" -v m="$READOUTEND" '$0 ~ s {for(l=1; l<=m; l++) if (l<=n) {getline;} else {getline; printf "% 1.6f\t% 1.6f\t% 1.6f\n", $2, $3, $4} }' $NAME.out > $OUTPUTSTEM.GD.mat 
+			awk -v s="$SEARCHSTR" -v n="$READOUTSTART" -v m="$READOUTEND" '$0 ~ s {for(l=1; l<=m; l++) if (l<=n) {getline;} else {getline; printf "% 1.6f\t% 1.6f\t% 1.6f\n", $2, $3, $4} }' $NAME.out > $OUTPUTSTEM.GD.mat
 			# Adjust params for DC + ETF
 			READOUTSTART=$(( $READOUTEND + 5 ))
 			READOUTEND=$(( READOUTSTART + $NATOMS ))

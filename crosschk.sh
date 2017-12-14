@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 # Usage crosschk.sh [output prefix] [SCF energy in a.u. which will be relative 0]
 # This is a script for checking if there has been a diabatic state crossing over a set of input diabatic state matrices

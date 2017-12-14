@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 # Usage: echoer.sh [total number of lines per iteration] [output name]
 

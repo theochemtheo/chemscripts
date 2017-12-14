@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 USAGE="Usage: command input, where input is a Gaussian 09 frequency calculation output file, for a calculation including the keyword freq=hpmodes"
 

@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 
 USAGE="Usage: This script requires a file 'diabats.lst' which must contain the names of Qchem 4.4 calculations including CIS/TDA excitations."
 

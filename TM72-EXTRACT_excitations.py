@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 """
 This script is intended to provide examples of ways of getting excitations out of the output from a Turbomole 7.2 escf calculation
+
+These are intended to emulate the types of array you get from cclib
 """
 
 import argparse

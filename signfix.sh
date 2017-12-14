@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 # Usage signfix.sh [name of mask matrix] [output prefix]
 #
