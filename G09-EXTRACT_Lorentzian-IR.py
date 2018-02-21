@@ -2,53 +2,11 @@
 
 # This script adapted (with permission) from the script "PlotBand", a script by J. Grant Hill.
 
-import sys
-# Check for the required modules, try to exit gracefully if not found
-import imp
-try:
-    imp.find_module('numpy')
-    foundnp = True
-except ImportError:
-    foundnp = False
-try:
-    imp.find_module('matplotlib')
-    foundplot = True
-except ImportError:
-    foundplot = False
-try:
-    imp.find_module('cclib')
-    foundcclib = True
-except ImportError:
-    foundcclib = False
-try:
-    imp.find_module('argparse')
-    foundarg = True
-except ImportError:
-    foundarg = False
-if not foundnp:
-    print("Numpy is required. Exiting")
-    sys.exit()
-if not foundplot:
-    print("Matplotlib is required. Exiting")
-    sys.exit()
-if not foundcclib:
-    print("cclib is required. Exiting")
-    sys.exit()
-if not foundarg:
-    print("Argh! Argparse is required. Exiting")
-    sys.exit()
 import numpy as np
 import matplotlib.pyplot as plt
 import cclib
 import argparse
-
-
-def Lorentzian(x, band, strength, FWHM):
-    # Lorentzian lineshape function
-    # This is based on a document by Jens Spanget-Larsen, which may be found at dx.doi.org/10.13140/RG.2.1.4181.6160
-    HWHM = FWHM / 2
-    bandshape = ((100 / np.log(10) / np.pi * strength) / HWHM) / (1 + ((x - band) / HWHM)**2)
-    return bandshape
+import lineshapes
 
 
 # Set up argument parsing
@@ -71,7 +29,7 @@ x = np.linspace(args["begin"], args["end"], args["points"])
 # Make the Lorentzians and add them together
 composite = 0
 for count, peak in enumerate(parsedfile.vibfreqs):
-    thispeak = Lorentzian(x, peak, parsedfile.vibirs[count], args["fwhm"])
+    thispeak = lineshapes.IRLorentzian(x, peak, parsedfile.vibirs[count], args["fwhm"])
     composite += thispeak
 
 # If saving has been asked for

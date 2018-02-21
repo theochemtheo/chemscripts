@@ -21,7 +21,7 @@ angstrtobohr = 1.88973
 cmtoeV = 1 / 8000
 
 # Create a list of the files ending with .out in the working directory
-list = glob.glob("{}/*.log".format(os.getcwd()))
+list = glob.glob("{}/*.out".format(os.getcwd()))
 
 # Create an array containing ccread objects of the files found
 files = []
