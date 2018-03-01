@@ -21,7 +21,8 @@ parser.add_argument("-q", dest="quiet", metavar="quiet", help="by default a matp
 args = vars(parser.parse_args())
 
 # Parse the file using cclib
-parsedfile = cclib.io.ccread(args["file"])
+incoming = cclib.parser.ccopen(args["file"])
+parsedfile = incoming.parse()
 
 # Create the x axis using the settings
 x = np.linspace(args["begin"], args["end"], args["points"])

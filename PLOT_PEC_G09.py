@@ -26,7 +26,8 @@ list = glob.glob("{}/*FC*.log".format(os.getcwd()))
 # Create an array containing ccread objects of the files found
 files = []
 for i in range(0, len(list)):
-    files.append(cclib.io.ccread(list[i]))
+    incoming = cclib.parser.ccopen(i)
+    files.append(incoming.parse())
 
 # # Prepare the dictionary which will contain ccread objects with keys of Q
 # pointsdict = {}
