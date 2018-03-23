@@ -2,6 +2,16 @@ from numpy import loadtxt, nan
 from re import findall
 
 
+def gsenergy(file):
+    gs = loadtxt(findall('(?<=Total energy\:).*', open(file).read()))[0]
+    return gs
+
+
+def esenergies(file):
+    es = loadtxt(findall('(?<=Total energy\:).*', open(file).read()))[1:]
+    return es
+
+
 def excitations(file):
     excitations = loadtxt(findall('(?<=Excitation energy \/ cm\^\(-1\)\:).*', open(file).read()))
     return excitations

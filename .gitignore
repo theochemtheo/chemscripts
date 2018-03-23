@@ -1,3 +1,7 @@
+#OS junk files
+[Tt]humbs.db
+*.DS_Store
+
 chemscripts.sublime-project
 chemscripts.sublime-workspace
 __pycache__
