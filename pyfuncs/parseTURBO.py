@@ -1,5 +1,29 @@
-from numpy import loadtxt, nan
+from numpy import loadtxt, nan, array, append, float
 from re import findall
+
+
+def atomcoords(file):
+    # Set up constants and arrays
+    autoangstr = 0.529177
+    rawmatched = []
+    finmatched = array([]).reshape(0, 3)
+    found = False
+    # Read file and keep only lines that match coordinate lines
+    readfile = open(file)
+    for line in readfile:
+        if found is True:
+            if not line.strip() == '':
+                rawmatched = append(rawmatched, line)
+            else:
+                break
+        if "atomic coordinates" in line:
+            found = True
+    readfile.close()
+    # Clear up the strings from these lines and create a numpy array analagous to the one from cclib
+    for line in rawmatched:
+        coordline = array(line.split()[0:3]).astype(float)
+        finmatched = append(finmatched, [coordline * autoangstr], axis=0)
+    return finmatched
 
 
 def gsenergy(file):
