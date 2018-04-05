@@ -2,6 +2,13 @@ from numpy import loadtxt, nan, array, append, float
 from re import findall
 
 
+# globals
+_bohrtoangstr = 0.529177210
+_hartreetoeV = 27.211386
+_hartreetocm = 2.194745313e3
+_eVtocm = 8.065544e3
+
+
 def atomcoords(file):
     # Set up constants and arrays
     autoangstr = 0.529177
@@ -141,3 +148,43 @@ def taumixrep(file):
     else:
         mixrep = nan
     return mixrep
+
+
+def cmtoeV(x):
+    converted = x / _eVtocm
+    return converted
+
+
+def eVtocm(x):
+    converted = x * _eVtocm
+    return converted
+
+
+def hartreetocm(x):
+    converted = x * _hartreetocm
+    return converted
+
+
+def cmtohartree(x):
+    converted = x / _hartreetocm
+    return converted
+
+
+def hartreetoeV(x):
+    converted = x * _hartreetoeV
+    return converted
+
+
+def eVtohartree(x):
+    converted = x / _hartreetoeV
+    return converted
+
+
+def bohrtoangstr(x):
+    converted = x * _bohrtoangstr
+    return converted
+
+
+def angstrtobohr(x):
+    converted = x / _bohrtoangstr
+    return converted
