@@ -1,0 +1,9 @@
+#!/usr/bin/expect
+
+log_user 0
+spawn tm2molden
+expect " ENTER NAME OF MOLDEN INPUT FILE (DEFAULT: molden.input):\r"
+send -- "\r"
+expect " molden.input (Y/N, DEFAULT: Y)?\r"
+send -- "\r"
+expect eof
