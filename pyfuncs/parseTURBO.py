@@ -1,11 +1,11 @@
 from numpy import loadtxt, nan, array, append, float
-from re import findall
+from re import findall, compile
 
 
 # globals
 _bohrtoangstr = 0.529177210
 _hartreetoeV = 27.211386
-_hartreetocm = 2.194745313e3
+_hartreetocm = 2.194745313e5
 _eVtocm = 8.065544e3
 
 
@@ -148,6 +148,28 @@ def taumixrep(file):
     else:
         mixrep = nan
     return mixrep
+
+
+def ricc2etenergies(file):
+    raw = findall('\|      [0-9].[0-9][0-9][0-9][0-9][0-9] \|      [0-9].[0-9][0-9][0-9][0-9][0-9] \|', open(file).read())
+    cleaned = [compile(r"\|").sub("", s) for s in raw]
+    etenergies = eVtocm(loadtxt(cleaned)[:, 0])
+    return etenergies
+
+
+def ricc2etosclenrep(file):
+    osc = loadtxt(findall('(?<=       oscillator strength \(length gauge\)   \:).*', open(file).read()))
+    return osc
+
+
+def ricc2etoscvelrep(file):
+    osc = loadtxt(findall('(?<=       oscillator strength \(velocity gauge\) \:).*', open(file).read()))
+    return osc
+
+
+def ricc2etoscmixrep(file):
+    osc = loadtxt(findall('(?<=       oscillator strength \(mixed gauge\)    \:).*', open(file).read()))
+    return osc
 
 
 def cmtoeV(x):
