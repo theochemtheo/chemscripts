@@ -3,7 +3,7 @@
 % You must have the script "sort_nat.m" from the MathWorks File Exchange placed in /usr/share/octave/[version-number]/m/ for this to work.
 %
 % Run this script using
-% octave -qf ~/bin/SCALE_PROJ.m [list of frequencies from hpmodes file.freqlist] [name of NACME file]
+% octave -qf ~/bin/chemscripts/SCALE_PROJ.m [list of frequencies from hpmodes file.freqlist] [name of NACME file]
 % the name of NACME file must be written WITHOUT suffixes, i.e. nacmes-calculation instead of nacmes-calculation.out, and the frequencies should be extracted with G09-EXTRACT_hpmodes_freqlist.sh
 %
 % To use this script, you must first:

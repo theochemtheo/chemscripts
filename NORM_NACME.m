@@ -1,7 +1,7 @@
 % This is an Octave script for normalizing non-adiabatic coupling vectors (matrix elements)
 %
 % Run this script using
-% octave -qf ~/bin/NORM_NACME.m [name of NACME file]
+% octave -qf ~/bin/chemscripts/NORM_NACME.m [name of NACME file]
 % the names must be written WITHOUT suffixes, i.e. hp-modes-calc instead of hp-modes-calc.log
 %
 % To use this script, you must first:
@@ -25,18 +25,22 @@ basenameNACME = arg_list{1};
 
 % set up search strings for the various files
 searchstrDCnoETF = sprintf('%s*DCnoETF.mat',basenameNACME);
-searchstrDCwithETF = sprintf('%s*DCwithETF.mat',basenameNACME);
 searchstrNACV = sprintf('%s*NACV.mat',basenameNACME);
+searchstrRNACV = sprintf('%s*recalcNACV.mat',basenameNACME);
+searchstrDCwithETF = sprintf('%s*DCwithETF.mat',basenameNACME);
 
 % construct sorted lists of the different types of files
 listDCnoETF=sort_nat(glob(searchstrDCnoETF));
 listNACV=sort_nat(glob(searchstrNACV));
+listRNACV=sort_nat(glob(searchstrRNACV));
 listDCwithETF=sort_nat(glob(searchstrDCwithETF));
 
 % Name of the DCnoETF output
 DCnoETFout = sprintf('%s.DCnoETF.norms',basenameNACME);
 % Name of the NACV output
 NACVout = sprintf('%s.NACV.norms',basenameNACME);
+% Name of the recalcNACV output
+RNACVout = sprintf('%s.recalcNACV.norms',basenameNACME);
 % Name of the DCwithETF output
 DCwithETFout = sprintf('%s.DCwithETF.norms',basenameNACME);
 % Prepare a matrix of the correct dimensions with column for NACME identity and zeros elsewhere
@@ -75,6 +79,24 @@ for i = 1:length(listNACV);
 endfor
 % write the output as a tab separated file with 6sf precision
 cell2csv (NACVout,magNACME)
+
+% Initialize magNACME
+magNACME = cell(length(listRNACV),2);
+% start looping through the DCnoETF files
+for i = 1:length(listRNACV);
+	% Name of the file containing this vector
+	nameNACME = listRNACV{i,1};
+	% Trim to get the pair of states being looked at
+	trimNACME = nameNACME(length(basenameNACME)+2:end-7);
+	% Load in the vector
+	NACME = dlmread(nameNACME);
+	% Put the correct values into column 1
+	magNACME(i,1) = trimNACME;
+	% Put the correct values into column 2
+	magNACME(i,2) = norm(NACME,"fro");
+endfor
+% write the output as a tab separated file with 6sf precision
+cell2csv (RNACVout,magNACME)
 
 % Initialize magNACME
 magNACME = cell(length(listDCwithETF),2);

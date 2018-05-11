@@ -2,8 +2,6 @@
 
 import numpy as np
 from numpy import linalg as LA
-import os
-import glob
 
 
 NACVs = {}
@@ -27,6 +25,8 @@ nNACVs = {}
 for key in NACVs.keys():
     nNACVs[key] = np.divide(NACVs[key], LA.norm(NACVs[key], 'fro'))
 
+natoms = len(NACVs['T1toT2'])
+
 freqlist = np.genfromtxt('B3LYP_CRENBL-Pt-6311Gdp-HCNOPS_CPCM_S0_NAPme_CC_Pt2PBu3_CC_Ph_CH2_PTZ_freq-hpmodes.freqlist')
 
 freqvecs = {}
@@ -40,7 +40,7 @@ for pairs in NACVs.keys():
     similarities = {}
     for mode in freqvecs.keys():
         sim = 0
-        for atom in range(144):
+        for atom in range(natoms):
             sim += np.abs(np.dot(nNACVs[pairs][atom, :], freqvecs[mode][atom, :]))
         similarities[mode] = sim
     combined = np.column_stack((freqlist, np.array(list(similarities.values()))))
