@@ -37,6 +37,7 @@ parser.add_argument("-p", dest="points", metavar="points", help="number of point
 parser.add_argument("-s", dest="save", metavar="save", help="file in which plot will be saved (optional)", required=False, default=None)
 parser.add_argument("-d", dest="data", help="should the sticks and plot data be saved? (optional)", required=False, default=None, action='store_true')
 parser.add_argument("-q", dest="quiet", help="by default a matplotlib window will appear, use -q to prevent this", required=False, default=None, action='store_true')
+parser.add_argument("-a", "--no-latex", dest="allergy", help="disable plotting with LaTeX", required=False, default=None, action='store_true')
 args = vars(parser.parse_args())
 
 # Create the x axis using the settings
@@ -69,15 +70,16 @@ if args["data"] is True:
 mpl.rcParams['figure.figsize'] = [9, 6]
 mpl.rcParams['figure.dpi'] = 100
 mpl.rcParams['savefig.dpi'] = 300
-mpl.rcParams['text.usetex'] = True
-mpl.rcParams['text.latex.unicode'] = True
-mpl.rcParams['text.latex.preamble'] = [
-    r'\usepackage{amsmath,amssymb,amsfonts,textcomp,array}',
-    r'\usepackage{txfonts}',
-    r'\usepackage{sansmath}',
-    r'\renewcommand*\sfdefault{phv}',
-    r'\renewcommand{\familydefault}{\sfdefault}',
-    r'\sansmath']
+if args["allergy"] is None:
+    mpl.rcParams['text.usetex'] = True
+    mpl.rcParams['text.latex.unicode'] = True
+    mpl.rcParams['text.latex.preamble'] = [
+        r'\usepackage{amsmath,amssymb,amsfonts,textcomp,array}',
+        r'\usepackage{txfonts}',
+        r'\usepackage{sansmath}',
+        r'\renewcommand*\sfdefault{phv}',
+        r'\renewcommand{\familydefault}{\sfdefault}',
+        r'\sansmath']
 # For altering y axis
 tenks = mpl.ticker.FuncFormatter(tenthousands)
 
@@ -85,16 +87,22 @@ tenks = mpl.ticker.FuncFormatter(tenthousands)
 fig, ax = plt.subplots()
 # Create the twinned axes for oscillator strength
 axes = [ax, ax.twinx()]
+# labels - check for LaTeX allergies
+if args["allergy"] is None:
+    axes[0].set_xlabel('Wavelength, $\lambdaup$ / nm', fontsize=14)
+    axes[0].set_ylabel('Molar absorption coefficient, $\\varepsilonup$ / $10^3\\times$ L mol$^{-1}$ cm$^{-1}$', fontsize=14)
+    axes[1].set_ylabel('Oscillator strength, $\\mathit{f}$ / dimensionless', fontsize=14)
+else:
+    axes[0].set_xlabel('Wavelength, lambda / nm', fontsize=14)
+    axes[0].set_ylabel('Molar absorption coefficient, epsilon / 1000 * L mol-1 cm-1', fontsize=14)
+    axes[1].set_ylabel('Oscillator strength, f / dimensionless', fontsize=14)
 # axes[0] is the convoluted UV spectrum
-axes[0].set_xlabel('Wavelength, $\lambdaup$ / nm', fontsize=14)
-axes[0].set_ylabel('Molar absorption coefficient, $\\varepsilonup$ / $10^3\\times$ L mol$^{-1}$ cm$^{-1}$', fontsize=14)
 axes[0].set_ylim([0, 1e5])
 axes[0].yaxis.set_major_formatter(tenks)
 axes[0].tick_params(labelsize=12)
 # Calculated
 axes[0].plot(1e7 / (x), composite_G_abs, color='r', alpha=0.5)
 # axes[1] is the stick spectrum
-axes[1].set_ylabel('Oscillator strength, $\\mathit{f}$ / dimensionless', fontsize=14)
 axes[1].set_ylim([0, 1])
 axes[1].tick_params(labelsize=12)
 axes[1].set_xlim([args["begin"], args["end"]])
