@@ -84,6 +84,7 @@ def NACV(file):
                 vector = np.multiply(vector, delta_E)
                 NACVS[NACV_key] = vector
 
+            # End of regex
             line = next(incoming, None)
 
     return NACVS, EXTRAS
@@ -107,6 +108,64 @@ class _QC_NACV_reg:
         self.coupling_flag = self._reg_coupling_flag.match(line)
         self.state_energy = self._reg_state_energy.match(line)
         self.SNO_flag = self._reg_nuclei_flag.match(line)
+
+
+def gradient(file):
+    """
+    Parse a Qchem 4.4 or 5.0 file and recover gradient vector
+
+    returns a numpy array containing the gradient vector
+    """
+
+    vector = np.array([]).reshape(0, 3)
+
+    with open(file, 'r') as incoming:
+        line = next(incoming)
+
+        while line:
+            reg_match = _QC_GRAD_reg(line)
+
+            # Number of atoms needed later on
+            if reg_match.SNO_flag:
+                line = next(incoming, None)
+                line = next(incoming, None)
+                line = next(incoming, None)
+                atomcount = 0
+                while '------------' not in line:
+                    atomcount += 1
+                    line = next(incoming, None)
+
+            # Figure out which coupling is being printed
+            if reg_match.deriv_flag:
+                # skip the flag line and next 3
+                line = next(incoming, None)
+                line = next(incoming, None)
+                line = next(incoming, None)
+                line = next(incoming, None)
+                # Once at gradient itself, capture the next natom lines
+                for i in range(atomcount):
+                    vector = np.append(vector, [np.array(line.split()[1:], dtype=float)], axis=0)
+                    line = next(incoming, None)
+
+            # End of regex
+            line = next(incoming, None)
+
+    # For some reason, two gradients are printed. At this time not clear which is correct. Assuming the 2nd one.
+    GRADVEC = vector[atomcount:]
+
+    return GRADVEC
+
+
+class _QC_GRAD_reg:
+    """ Regex for Qchem 4.4 & 5.0 gradients """
+    _reg_nuclei_flag = re.compile(r'.*Standard Nuclear Orientation.*')
+    _reg_deriv_flag = re.compile(r'.*total gradient after adding PCM contribution.*')
+
+    __slots__ = ['SNO_flag', 'deriv_flag']
+
+    def __init__(self, line):
+        self.SNO_flag = self._reg_nuclei_flag.match(line)
+        self.deriv_flag = self._reg_deriv_flag.match(line)
 
 
 def cmtoeV(x):

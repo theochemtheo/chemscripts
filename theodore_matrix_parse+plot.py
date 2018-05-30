@@ -77,21 +77,25 @@ mpl.rcParams['text.latex.preamble'] = [
     r'\renewcommand{\familydefault}{\sfdefault}',
     r'\sansmath']
 
+# Change border box linewidth
+mpl.rcParams['axes.linewidth'] = 1
+
+
 # Plotting
 fig, ax = plt.subplots(5, 4, sharey='row', sharex='col')
 for i in range(len(OmFragRaw)):
     OmFragMat = reorder(np.transpose(OmFragRaw[i].reshape([OmFragDim, OmFragDim])))
     stateE = ExE[i]
     # MC
-    ax[np.floor_divide(i, 4), np.mod(i, 4)].pcolormesh(np.ma.array(OmFragMat, mask=reorder(MCmask)), cmap=plt.cm.Reds, shading='flat', edgecolors='black', vmin=0, vmax=1, linewidth=0.01)
+    ax[np.floor_divide(i, 4), np.mod(i, 4)].pcolormesh(np.ma.array(OmFragMat, mask=reorder(MCmask)), cmap=plt.cm.Reds, shading='flat', edgecolors='black', vmin=0, vmax=1, linewidth=0.5)
     # MLCT/LMCT
-    ax[np.floor_divide(i, 4), np.mod(i, 4)].pcolormesh(np.ma.array(OmFragMat, mask=reorder(bothMLCT)), cmap=plt.cm.Purples, shading='flat', edgecolors='black', vmin=0, vmax=1, linewidth=0.01)
+    ax[np.floor_divide(i, 4), np.mod(i, 4)].pcolormesh(np.ma.array(OmFragMat, mask=reorder(bothMLCT)), cmap=plt.cm.Purples, shading='flat', edgecolors='black', vmin=0, vmax=1, linewidth=0.5)
     # LC
-    ax[np.floor_divide(i, 4), np.mod(i, 4)].pcolormesh(np.ma.array(OmFragMat, mask=reorder(LCmask)), cmap=plt.cm.Greens, shading='flat', edgecolors='black', vmin=0, vmax=1, linewidth=0.01)
+    ax[np.floor_divide(i, 4), np.mod(i, 4)].pcolormesh(np.ma.array(OmFragMat, mask=reorder(LCmask)), cmap=plt.cm.Greens, shading='flat', edgecolors='black', vmin=0, vmax=1, linewidth=0.5)
     # LLCT
-    ax[np.floor_divide(i, 4), np.mod(i, 4)].pcolormesh(np.ma.array(OmFragMat, mask=reorder(LLCT)), cmap=plt.cm.Blues, shading='flat', edgecolors='black', vmin=0, vmax=1, linewidth=0.01)
-    ax[np.floor_divide(i, 4), np.mod(i, 4)].set(adjustable='box-forced', aspect='equal', xticks=tickpos, yticks=tickpos)
-    ax[np.floor_divide(i, 4), np.mod(i, 4)].tick_params(axis='both', which='both', bottom='off', left='off')
+    ax[np.floor_divide(i, 4), np.mod(i, 4)].pcolormesh(np.ma.array(OmFragMat, mask=reorder(LLCT)), cmap=plt.cm.Blues, shading='flat', edgecolors='black', vmin=0, vmax=1, linewidth=0.5)
+    ax[np.floor_divide(i, 4), np.mod(i, 4)].set(aspect='equal', xticks=tickpos, yticks=tickpos)
+    ax[np.floor_divide(i, 4), np.mod(i, 4)].tick_params(axis='both', which='both', bottom=False, left=False)
     ax[np.floor_divide(i, 4), np.mod(i, 4)].set_xticklabels(reordlab, rotation=90, horizontalalignment='center')
     ax[np.floor_divide(i, 4), np.mod(i, 4)].set_yticklabels(reordlab, verticalalignment='center')
     ax[np.floor_divide(i, 4), np.mod(i, 4)].set_title('{:1.2f} eV'.format(stateE), loc='center')
@@ -100,6 +104,10 @@ for i in range(len(OmFragRaw)):
             ax[np.floor_divide(i, 4), np.mod(i, 4)].text(y + 0.5, x + 0.5, '{:0.0f}'.format(z * 100), ha='center', va='center')
         elif z >= 0.7:
             ax[np.floor_divide(i, 4), np.mod(i, 4)].text(y + 0.5, x + 0.5, '{:0.0f}'.format(z * 100), ha='center', va='center', color='white')
-plt.subplots_adjust(left=0.00, right=1.00, bottom=0.05, top=0.96, wspace=0.0, hspace=0.34)
-plt.tight_layout()
+    for each in range(OmFragDim):
+        ax[np.floor_divide(i, 4), np.mod(i, 4)].text(each + 0.5, OmFragDim + 0.5, '{:0.0f}'.format(sum(OmFragMat[:, each]) * 100), ha='center', va='center')
+        ax[np.floor_divide(i, 4), np.mod(i, 4)].text(OmFragDim + 0.5, each + 0.5, '{:0.0f}'.format(sum(OmFragMat[each, :]) * 100), ha='center', va='center')
+plt.subplots_adjust(left=0.07, right=0.96, bottom=0.07, top=0.95, wspace=0.36, hspace=0.18)
+# plt.tight_layout()
+plt.savefig('OmFragPlot.pdf')
 plt.show()

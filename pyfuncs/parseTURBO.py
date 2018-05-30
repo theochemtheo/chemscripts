@@ -2,6 +2,13 @@ from numpy import loadtxt, nan, array, append, float
 from re import findall, compile
 
 
+'''
+parseTURBO provides similar functionality to cclib, but for Turbomole calculations
+
+It has been tested with Turbomole version 7.2.
+'''
+
+
 # globals
 _bohrtoangstr = 0.529177210
 _hartreetoeV = 27.211386
@@ -10,6 +17,11 @@ _eVtocm = 8.065544e3
 
 
 def atomcoords(file):
+    '''
+    Extract atomic coordinates from a Turbomole calculation
+
+    returns a numpy array of atomic coordinates in angstrom
+    '''
     # Set up constants and arrays
     autoangstr = 0.529177
     rawmatched = []
@@ -34,21 +46,41 @@ def atomcoords(file):
 
 
 def gsenergy(file):
+    '''
+    Extract ground state energy in hartrees
+
+    returns a string
+    '''
     gs = loadtxt(findall('(?<=Total energy\:).*', open(file).read()))[0]
     return gs
 
 
 def esenergies(file):
+    '''
+    Extract excited state absolute energies in hartrees. This only works for escf calculatons.
+
+    returns an array of strings
+    '''
     es = loadtxt(findall('(?<=Total energy\:).*', open(file).read()))[1:]
     return es
 
 
 def excitations(file):
+    '''
+    Extract excitation energies in cm-1. This only works for escf calculations.
+
+    returns an array of strings
+    '''
     excitations = loadtxt(findall('(?<=Excitation energy \/ cm\^\(-1\)\:).*', open(file).read()))
     return excitations
 
 
 def twoCcheck(file):
+    '''
+    Checks if calculation is 2C or not.
+
+    returns boolean
+    '''
     istwoC = False
     with open(file, 'r') as f:
         for line in f.readlines():
@@ -58,48 +90,93 @@ def twoCcheck(file):
 
 
 def _oneCoscvelrep(file):
+    '''
+    Extract oscillator strengths in velocity representation from non-2C escf calculation.
+
+    returns array of strings
+    '''
     velrep = loadtxt(findall('(?<=velocity representation\:).*', open(file).read()))[0::2]
     return velrep
 
 
 def _oneCosclenrep(file):
+    '''
+    Extract oscillator strengths in length representation from non-2C escf calculation.
+
+    returns array of strings
+    '''
     lenrep = loadtxt(findall('(?<=length representation\:).*', open(file).read()))[0::2]
     return lenrep
 
 
 def _oneCoscmixrep(file):
+    '''
+    Extract oscillator strengths in mixed representation from non-2C escf calculation.
+
+    returns array of strings
+    '''
     mixedrep = loadtxt(findall('(?<=mixed representation\:).*', open(file).read()))[0::1]
     return mixedrep
 
 
 def _twoCoscvelrep(file):
+    '''
+    Extract oscillator strengths in velocity representation from 2C escf calculation.
+
+    returns array of strings
+    '''
     velrep = loadtxt(findall('(?<=velocity representation\:).*', open(file).read()))[0::3]
     return velrep
 
 
 def _twoCosclenrep(file):
+    '''
+    Extract oscillator strengths in length representation from 2C escf calculation.
+
+    returns array of strings
+    '''
     lenrep = loadtxt(findall('(?<=length representation\:).*', open(file).read()))[0::3]
     return lenrep
 
 
 def _twoCoscmixrep(file):
+    '''
+    Extract oscillator strengths in mixed representation from 2C escf calculation.
+
+    returns array of strings
+    '''
     mixedrep = loadtxt(findall('(?<=mixed representation\:).*', open(file).read()))[0::2]
     return mixedrep
 
 
+def _twoCtauvelrep(file):
+    '''
+    Extract radiative lifetimes in velocity representation from 2C escf calculation.
+
+    returns array of strings
+    '''
+    velrep = loadtxt(findall('(?<=velocity representation\:).*', open(file).read()))[1::3]
+    return velrep
+
+
 def _twoCtaulenrep(file):
+    '''
+    Extract radiative lifetimes in length representation from 2C escf calculation.
+
+    returns array of strings
+    '''
     lenrep = loadtxt(findall('(?<=length representation\:).*', open(file).read()))[1::3]
     return lenrep
 
 
 def _twoCtaumixrep(file):
+    '''
+    Extract radiative lifetimes in mixed representation from 2C escf calculation.
+
+    returns array of strings
+    '''
     mixedrep = loadtxt(findall('(?<=mixed representation\:).*', open(file).read()))[1::2]
     return mixedrep
-
-
-def _twoCtauvelrep(file):
-    velrep = loadtxt(findall('(?<=velocity representation\:).*', open(file).read()))[1::3]
-    return velrep
 
 
 def oscvelrep(file):
