@@ -62,6 +62,10 @@ args = vars(parser.parse_args())
 
 infile = cclib.parser.ccopen(args["file"]).parse()
 
+# Determine padding requirements for output name
+n_modes = len(infile.vibfreqs)
+pad_length = len(str(n_modes))
+
 for index, mode in enumerate(infile.vibdisps):
     bild = VIBbilder(mode)
     if not args["quiet"]:
@@ -69,7 +73,7 @@ for index, mode in enumerate(infile.vibdisps):
             print('{}'.format(bild[line]))
     if args["save"]:
         basename = os.path.basename(args["file"])[:-4]
-        thisname = '{}.m{}.bild'.format(basename, index + 1)
+        thisname = '{0}.m{1:0{1}d}.bild'.format(basename, index + 1, pad_length)
         if not os.path.exists(thisname):
             with open(thisname, 'a') as bild_file:
                 for line in range(len(bild)):
