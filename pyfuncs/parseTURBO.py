@@ -1,19 +1,15 @@
 from numpy import loadtxt, nan, array, append, float
 from re import findall, compile
+from parseFUNCS import *
 
 
 '''
+
 parseTURBO provides similar functionality to cclib, but for Turbomole calculations
 
 It has been tested with Turbomole version 7.2.
+
 '''
-
-
-# globals
-_bohrtoangstr = 0.529177210
-_hartreetoeV = 27.211386
-_hartreetocm = 2.194745313e5
-_eVtocm = 8.065544e3
 
 
 def atomcoords(file):
@@ -248,42 +244,3 @@ def ricc2etoscmixrep(file):
     osc = loadtxt(findall('(?<=       oscillator strength \(mixed gauge\)    \:).*', open(file).read()))
     return osc
 
-
-def cmtoeV(x):
-    converted = x / _eVtocm
-    return converted
-
-
-def eVtocm(x):
-    converted = x * _eVtocm
-    return converted
-
-
-def hartreetocm(x):
-    converted = x * _hartreetocm
-    return converted
-
-
-def cmtohartree(x):
-    converted = x / _hartreetocm
-    return converted
-
-
-def hartreetoeV(x):
-    converted = x * _hartreetoeV
-    return converted
-
-
-def eVtohartree(x):
-    converted = x / _hartreetoeV
-    return converted
-
-
-def bohrtoangstr(x):
-    converted = x * _bohrtoangstr
-    return converted
-
-
-def angstrtobohr(x):
-    converted = x / _bohrtoangstr
-    return converted
