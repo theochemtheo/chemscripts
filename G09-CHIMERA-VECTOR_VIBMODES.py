@@ -73,7 +73,7 @@ for index, mode in enumerate(infile.vibdisps):
             print('{}'.format(bild[line]))
     if args["save"]:
         basename = os.path.basename(args["file"])[:-4]
-        thisname = '{0}.m{1:0{1}d}.bild'.format(basename, index + 1, pad_length)
+        thisname = '{0}.m{1:0{2}d}.bild'.format(basename, index + 1, pad_length)
         if not os.path.exists(thisname):
             with open(thisname, 'a') as bild_file:
                 for line in range(len(bild)):
