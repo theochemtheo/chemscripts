@@ -54,6 +54,21 @@ def angstrtobohr(x):
     return converted
 
 
+def atomwise_dot(vector1, vector2):
+    """
+    This function takes the dot product between two vectors row by row, e.g. for comparing two sets of molecular coordinates
+    or for comparing a gradient with a vibrational mode
+
+    returns a float
+    """
+    if len(vector1) != len(vector2):
+        total_dot = np.nan
+        raise ValueError('The two inputs are not the same length')
+    else:
+        total_dot = np.dot(np.ravel(vector1), np.ravel(vector2))
+    return total_dot
+
+
 def mass_weight(vector, atoms):
     """
     This function takes in a vector (i.e. NACV or gradient) and returns the mass-weighted version of it,
