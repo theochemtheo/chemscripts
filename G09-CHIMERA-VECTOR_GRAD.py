@@ -17,7 +17,7 @@ def GRADbilder(GRAD):
 
     # Norm the GRAD
     GRADmag = np.linalg.norm(GRAD, 'fro')
-    nGRAD = np.divide(GRAD, GRADmag)
+    nGRAD = -1 * np.divide(GRAD, GRADmag)  # Gaussian outputs the force, which is -1 * gradient
 
     GRADbild = ()
 
