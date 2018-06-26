@@ -56,7 +56,7 @@ def gradient(file):
 
 class _G09_GRAD_reg:
     """ Regex for Gaussian 09 gradients """
-    _reg_nuclei_flag = re.compile(r'.*Input orientation:.*')
+    _reg_nuclei_flag = re.compile(r'.*Standard orientation:.*')
     _reg_deriv_flag = re.compile(r'.*Forces \(Hartrees/Bohr.*')
 
     __slots__ = ['SNO_flag', 'deriv_flag']
