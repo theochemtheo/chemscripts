@@ -109,7 +109,7 @@ if n_plot > n_states:
 
 # Plotting
 fig, ax = plt.subplots(plot_rows, plot_cols, sharey='row', sharex='col')
-for i in range(n_states):
+for i in range(n_plot):
     ThisOmFragMat = reorder(np.transpose(OmFragRaw[i].reshape([OmFragDim, OmFragDim])))
     stateE = ExE[i]
     # MC
