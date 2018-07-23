@@ -43,10 +43,10 @@ bothMLCT = np.invert(np.logical_xor(MLCTmask, LMCTmask))
 LCmask = np.invert(np.eye(OmFragDim, dtype=bool))
 LCmask[0, 0] = True
 # LLCT
-LLCT = np.ones([OmFragDim, OmFragDim], dtype=bool)
-LLCT[0, 0] = False
-LLCT = np.logical_xor(LLCT, bothMLCT)
-LLCT = np.invert(np.logical_xor(LLCT, LCmask))
+LLCTmask = np.ones([OmFragDim, OmFragDim], dtype=bool)
+LLCTmask[0, 0] = False
+LLCTmask = np.logical_xor(LLCTmask, bothMLCT)
+LLCTmask = np.invert(np.logical_xor(LLCTmask, LCmask))
 
 # Some sensible defaults
 axlabels = ["M"]
@@ -93,7 +93,7 @@ for i in range(len(OmFragRaw)):
     # LC
     ax[np.floor_divide(i, 4), np.mod(i, 4)].pcolormesh(np.ma.array(OmFragMat, mask=reorder(LCmask)), cmap=plt.cm.Greens, shading='flat', edgecolors='black', vmin=0, vmax=1, linewidth=0.5)
     # LLCT
-    ax[np.floor_divide(i, 4), np.mod(i, 4)].pcolormesh(np.ma.array(OmFragMat, mask=reorder(LLCT)), cmap=plt.cm.Blues, shading='flat', edgecolors='black', vmin=0, vmax=1, linewidth=0.5)
+    ax[np.floor_divide(i, 4), np.mod(i, 4)].pcolormesh(np.ma.array(OmFragMat, mask=reorder(LLCTmask)), cmap=plt.cm.Blues, shading='flat', edgecolors='black', vmin=0, vmax=1, linewidth=0.5)
     ax[np.floor_divide(i, 4), np.mod(i, 4)].set(aspect='equal', xticks=tickpos, yticks=tickpos)
     ax[np.floor_divide(i, 4), np.mod(i, 4)].tick_params(axis='both', which='both', bottom=False, left=False)
     ax[np.floor_divide(i, 4), np.mod(i, 4)].set_xticklabels(reordlab, rotation=90, horizontalalignment='center')
