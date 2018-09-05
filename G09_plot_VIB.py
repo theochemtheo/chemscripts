@@ -73,10 +73,10 @@ def tenthousands(x, pos):
 # Set up argument parsing
 parser = argparse.ArgumentParser(description="This script uses cclib to plot a broadened UV/vis spectrum from a Gaussian 09 calculations")
 parser.add_argument("-i", dest="file", metavar="file", help="input Gaussian 09 calculation", required=True)
-parser.add_argument("-f", dest="fwhm", metavar="FWHM", help="the FWHM in cm-1 of the desired Gaussians. Default: 1500 cm-1", type=int, required=False, default=1500)
-parser.add_argument("-b", dest="begin", metavar="begin", help="beginning (in nm) of plot. Default: 300 nm", type=int, required=False, default=300)
-parser.add_argument("-e", dest="end", metavar="end", help="end (in nm) of plot. Default: 800 nm", type=int, required=False, default=800)
-parser.add_argument("-p", dest="points", metavar="points", help="number of points in plot. Default: 8000", type=int, required=False, default=8000)
+parser.add_argument("-f", dest="fwhm", metavar="FWHM", help="the FWHM in cm-1 of the desired Gaussians. Default: 8 cm-1", type=int, required=False, default=8)
+parser.add_argument("-b", dest="begin", metavar="begin", help="beginning (in cm-1) of plot. Default: 0 cm-1", type=int, required=False, default=0)
+parser.add_argument("-e", dest="end", metavar="end", help="end (in cm-1) of plot. Default: 3500 cm-1", type=int, required=False, default=3500)
+parser.add_argument("-p", dest="points", metavar="points", help="number of points in plot. Default: 10000", type=int, required=False, default=10000)
 parser.add_argument("-s", dest="save", metavar="save", help="file in which plot will be saved (optional)", required=False, default=None)
 parser.add_argument("-d", dest="data", help="should the sticks and plot data be saved? (optional)", required=False, default=None, action='store_true')
 parser.add_argument("-q", dest="quiet", help="by default a matplotlib window will appear, use -q to prevent this", required=False, default=None, action='store_true')
@@ -88,8 +88,7 @@ parser.add_argument("-a", "--no-latex", dest="allergy", help="disable plotting w
 args = vars(parser.parse_args())
 
 # Create the x axis using the settings
-x = np.linspace(1e7 / args["begin"], 1e7 / args["end"], args["points"])
-smoothx = np.linspace(1e7 / args["begin"], 1e7 / args["end"], 150)
+x = np.linspace(args["begin"], args["end"], args["points"])
 
 # Files to be parsed
 parsed_input = cclib.parser.ccopen(args["file"]).parse()
@@ -154,8 +153,6 @@ if args["allergy"] is None:
         r'\renewcommand*\sfdefault{phv}',
         r'\renewcommand{\familydefault}{\sfdefault}',
         r'\sansmath']
-# For altering y axis
-tenks = mpl.ticker.FuncFormatter(tenthousands)
 
 # Prepare the axes
 fig, ax = plt.subplots()
@@ -168,25 +165,23 @@ if args["allergy"] is None:
         axes[0].set_ylabel('Raman intensity, $I$ / m kg$^{-1}$', fontsize=14)
         axes[1].set_ylabel('Raman activity / \\AA$^4$ Da$^{-1}$', fontsize=14)
     else:
-        axes[0].set_ylabel('Molar absorption coefficient, $\\varepsilonup$ / $10^3\\times$ L mol$^{-1}$ cm$^{-1}$', fontsize=14)
-        axes[1].set_ylabel('IR intensity / km mol^{-1}', fontsize=14)
+        axes[0].set_ylabel('Molar absorption coefficient, $\\varepsilonup$ / L mol$^{-1}$ cm$^{-1}$', fontsize=14)
+        axes[1].set_ylabel('IR intensity / km mol$^{-1}$', fontsize=14)
 else:
     axes[0].set_xlabel('Frequency, nu-tilde / cm^-1', fontsize=14)
     axes[0].set_ylabel('{}'.format(signal_name), fontsize=14)
     axes[1].set_ylabel('{}'.format(intensities_name), fontsize=14)
 # axes[0] is the convoluted spectrum
 axes[0].set_ylim([0, 1.2 * np.max(composite_spectrum)])
-if not args["Raman"]:
-    axes[0].yaxis.set_major_formatter(tenks)
 axes[0].tick_params(labelsize=12)
 # Calculated
-axes[0].plot(1e7 / (x), composite_spectrum, color='r', alpha=0.5)
+axes[0].plot(x, composite_spectrum, color='r', alpha=0.5)
 # axes[1] is the stick spectrum
-axes[1].set_ylim([0, 1.2 * np.max(intensities)])
+axes[1].set_ylim([0, 1.5 * np.max(intensities)])
 axes[1].tick_params(labelsize=12)
 axes[1].set_xlim([args["begin"], args["end"]])
 # Plot sticks using scaled frequencies
-axes[1].vlines(1e7 / parsed_input.vibfreqs, 0, intensities, color='r', alpha=0.5)
+axes[1].vlines(parsed_input.vibfreqs, 0, intensities, color='r', alpha=0.5)
 # Change formatting and plot
 fig.tight_layout()
 # If not in quiet mode
