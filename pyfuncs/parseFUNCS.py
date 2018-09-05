@@ -12,6 +12,7 @@ _bohrtoangstr = 0.529177210
 _hartreetoeV = 27.211386
 _hartreetocm = 2.194745313e5
 _eVtocm = 8.065544e3
+_daltontokg = 1.660539040e-27
 
 
 def cmtoeV(x):
@@ -51,6 +52,16 @@ def bohrtoangstr(x):
 
 def angstrtobohr(x):
     converted = x / _bohrtoangstr
+    return converted
+
+
+def daltontokg(x):
+    converted = x * _daltontokg
+    return converted
+
+
+def kgtodalton(x):
+    converted = x / _daltontokg
     return converted
 
 
