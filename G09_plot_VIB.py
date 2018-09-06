@@ -83,7 +83,7 @@ parser.add_argument("-q", dest="quiet", help="by default a matplotlib window wil
 parser.add_argument("-L", dest="Lorentzian", help="by default, a Gaussian broadening function is applied, use -L to change this to Lorentzian", required=False, default=False, action='store_true')
 parser.add_argument("-R", dest="Raman", help="by default, the IR spectrum is plotted, use -R to change this to non-resonant Raman", required=False, default=False, action='store_true')
 parser.add_argument("-T", dest="temperature", help="T used in Raman intensity calculations. Default: 298.15 K", required=False, default=298.15)
-parser.add_argument("-X", dest="excitation", help="Excitation wavelength (in nm) used in non-resonant Raman. Default: 1064 nm (Nd:YAG)", required=False, default=1064)
+parser.add_argument("-X", dest="excitation", help="Excitation wavelength (in nm) used in non-resonant Raman. Default: 1064 nm (Nd:YAG)", required=False, default=1064.0, type=float)
 parser.add_argument("-a", "--no-latex", dest="allergy", help="disable plotting with LaTeX", required=False, default=None, action='store_true')
 args = vars(parser.parse_args())
 
