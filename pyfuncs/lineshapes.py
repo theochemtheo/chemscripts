@@ -1,4 +1,5 @@
-from numpy import pi, exp, log
+from numpy import pi, exp, log, sqrt
+import parseFUNCS as pF
 
 
 _daltontokg = 1.660539040e-27
@@ -23,6 +24,21 @@ def _Ramanprefac(band, activity, excitation, temperature):
     prefac_denom = (100 * band) * (1 - exp(-(_hPlanck * _cSpeedOfLight * 100 * band) / (_kBoltzmann * temperature)))
     prefac = prefac_num / prefac_denom
     return prefac
+
+
+def _STA_resonance_raman_prefac(band, tdm, gradient):
+    '''
+    Equation 8 from Kane & Jansen, J. Phys. Chem. C, 2010, 114, 5541 dx.doi.org/10.1021/jp906152q
+    "Short time approximation" or ES-gradient approximation
+
+    dimensionless normal mode coordinate q = sqrt(h-bar / frequency) * Normalmode
+    displacement from equation 6 of same paper (IMDHO model)
+    '''
+    normal_mode_to_dimless_factor = sqrt(1 / pF.cmtohartree(band))
+    dimless_gradient = gradient / normal_mode_to_dimless_factor
+    displacement = dimless_gradient / -pF.cmtohartree(band)
+    scattering_factor = 12 * tdm**4 * band**2 * displacement**2
+    return scattering_factor
 
 
 def _UVprefac(strength, FWHM):
@@ -116,3 +132,23 @@ def emGaussian(x, band, strength, FWHM):
     '''
     epsilon = _emprefac(x, strength, FWHM) * _Gaussian(x, band, FWHM)
     return epsilon
+
+
+def STA_RR_Gaussian(x, band, tdm, gradient, FWHM):
+    '''
+    Resonance Raman within the short time approximation a.k.a. ES-gradient approximation broadened with a Gaussian
+
+    returns intensity (float)
+    '''
+    intensity = _STA_resonance_raman_prefac(band, tdm) * _Gaussian(x, band, FWHM)
+    return intensity
+
+
+def STA_RR_Lorentzian(x, band, tdm, gradient, FWHM):
+    '''
+    Resonance Raman within the short time approximation a.k.a. ES-gradient approximation broadened with a Lorentzian
+
+    returns intensity (float)
+    '''
+    intensity = _STA_resonance_raman_prefac(band, tdm) * _Lorentzian(x, band, FWHM)
+    return intensity

@@ -73,7 +73,7 @@ def tenthousands(x, pos):
 # Set up argument parsing
 parser = argparse.ArgumentParser(description="This script uses cclib to plot a broadened UV/vis spectrum from a Gaussian 09 calculations")
 parser.add_argument("-i", dest="file", metavar="file", help="input Gaussian 09 calculation", required=True)
-parser.add_argument("-f", dest="fwhm", metavar="FWHM", help="the FWHM in cm-1 of the desired Gaussians. Default: 8 cm-1", type=int, required=False, default=8)
+parser.add_argument("-f", dest="fwhm", metavar="FWHM", help="the FWHM in cm-1 of the desired broadening functions. Default: 8 cm-1", type=int, required=False, default=8)
 parser.add_argument("-b", dest="begin", metavar="begin", help="beginning (in cm-1) of plot. Default: 0 cm-1", type=int, required=False, default=0)
 parser.add_argument("-e", dest="end", metavar="end", help="end (in cm-1) of plot. Default: 3500 cm-1", type=int, required=False, default=3500)
 parser.add_argument("-p", dest="points", metavar="points", help="number of points in plot. Default: 10000", type=int, required=False, default=10000)
@@ -84,6 +84,7 @@ parser.add_argument("-L", dest="Lorentzian", help="by default, a Gaussian broade
 parser.add_argument("-R", dest="Raman", help="by default, the IR spectrum is plotted, use -R to change this to non-resonant Raman", required=False, default=False, action='store_true')
 parser.add_argument("-T", dest="temperature", help="T used in Raman intensity calculations. Default: 298.15 K", required=False, default=298.15)
 parser.add_argument("-X", dest="excitation", help="Excitation wavelength (in nm) used in non-resonant Raman. Default: 1064 nm (Nd:YAG)", required=False, default=1064.0, type=float)
+parser.add_argument("-n", dest="normalize", help="Set this to normalize the y-axis to 1", required=False, default=False, action='store_true')
 parser.add_argument("-a", "--no-latex", dest="allergy", help="disable plotting with LaTeX", required=False, default=None, action='store_true')
 args = vars(parser.parse_args())
 
@@ -101,7 +102,10 @@ if args["Raman"]:
     spectrum_type = 'non-resonant Raman Scattering'
     intensities = parsed_input.vibramans
     intensities_name = 'Raman activity / Angstrom^4 Dalton^-1'
-    signal_name = 'Raman intensity / m kg^-1'
+    if args["normalize"]:
+        signal_name = 'Normalized Raman intensity / arb. units'
+    else:
+        signal_name = 'Raman intensity / m kg^-1'
     if args["Lorentzian"]:
         broadening_function = RamanLorentzian
         broadening_function_name = 'Lorentzian'
@@ -112,7 +116,10 @@ else:
     spectrum_type = 'Infrared absorption'
     intensities = parsed_input.vibirs
     intensities_name = 'IR intensity / km mol^-1'
-    signal_name = 'Molar absorption coefficient (epsilon) / L mol^-1 cm^-1'
+    if args["normalize"]:
+        signal_name = 'Normalized molar absorption coefficient (epsilon) / arb. units'
+    else:
+        signal_name = 'Molar absorption coefficient (epsilon) / L mol^-1 cm^-1'
     if args["Lorentzian"]:
         broadening_function = IRLorentzian
         broadening_function_name = 'Lorentzian'
@@ -130,6 +137,10 @@ for count, peak in enumerate(parsed_input.vibfreqs):
     composite_spectrum += thispeak
 # Have to transpose
 composite_spectrum = np.transpose(composite_spectrum)
+
+# Normalize if necessary
+if args["normalize"]:
+    composite_spectrum = composite_spectrum / np.max(composite_spectrum)
 
 if args["data"] is True:
     stk_header = 'Vibrational energies / cm^-1 and {}, extracted from {}'.format(intensities_name, args["file"])
@@ -162,10 +173,16 @@ axes = [ax, ax.twinx()]
 if args["allergy"] is None:
     axes[0].set_xlabel('Frequency, $\\tilde{\\nu}$ / cm$^{-1}$', fontsize=14)
     if args["Raman"]:
-        axes[0].set_ylabel('Raman intensity, $I$ / m kg$^{-1}$', fontsize=14)
+        if args["normalize"]:
+            axes[0].set_ylabel('{}'.format(signal_name), fontsize=14)
+        else:
+            axes[0].set_ylabel('Raman intensity, $I$ / m kg$^{-1}$', fontsize=14)
         axes[1].set_ylabel('Raman activity / \\AA$^4$ Da$^{-1}$', fontsize=14)
     else:
-        axes[0].set_ylabel('Molar absorption coefficient, $\\varepsilonup$ / L mol$^{-1}$ cm$^{-1}$', fontsize=14)
+        if args["normalize"]:
+            axes[0].set_ylabel('{}'.format(signal_name), fontsize=14)
+        else:
+            axes[0].set_ylabel('Molar absorption coefficient, $\\varepsilonup$ / L mol$^{-1}$ cm$^{-1}$', fontsize=14)
         axes[1].set_ylabel('IR intensity / km mol$^{-1}$', fontsize=14)
 else:
     axes[0].set_xlabel('Frequency, nu-tilde / cm^-1', fontsize=14)

@@ -47,9 +47,8 @@ def gradient(file):
             # End of regex
             line = next(incoming, None)
 
-    # May need to rearrange the forces in the future so leaving this blank
-
-    GRADVEC = vector
+    # Gradient = -Force
+    GRADVEC = -vector
 
     return GRADVEC
 
