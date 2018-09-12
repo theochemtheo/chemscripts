@@ -29,7 +29,7 @@ def VIBbilder(VIBMODE):
     arrow_stk_frc = "0.75"
 
     # Get the atom coordinates
-    coords = infile.atomcoords[0]
+    coords = infile.atomcoords[-1]
 
     # Pre-amble
     VIBMODEbild = VIBMODEbild + (".color {}".format(arrow_color), )
