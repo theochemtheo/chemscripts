@@ -409,6 +409,7 @@ def osc_to_tdm(f, Ei, Ef):
     returns tdm in atomic units (e * bohr) as float
     '''
     if f == 0:
-        f = 1e-9
-    tdm = np.sqrt((3 * f) / (2 * (Ef - Ei)))
+        tdm = 0
+    else:
+        tdm = np.sqrt((3 * f) / (2 * (Ef - Ei)))
     return tdm
