@@ -426,5 +426,5 @@ def tdm_to_osc(mu, Ei, Ef):
     if mu == 0:
         f = 0.
     else:
-        f = 2 / 3 * (Ei - Ef) * mu**2
+        f = 2 / 3 * (Ef - Eis) * mu**2
     return f
