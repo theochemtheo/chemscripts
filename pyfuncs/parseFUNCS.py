@@ -413,3 +413,18 @@ def osc_to_tdm(f, Ei, Ef):
     else:
         tdm = np.sqrt((3 * f) / (2 * (Ef - Ei)))
     return tdm
+
+
+def tdm_to_osc(mu, Ei, Ef):
+    '''
+    Convert transition dipole moment to oscillator strength
+
+    requires initial and final energies in hartrees, tdm as a scalar in atomic units (e * bohr)
+
+    returns oscillator strength (dimensionless) as float
+    '''
+    if mu == 0:
+        f = 0.
+    else:
+        f = 2 / 3 * (Ei - Ef) * mu**2
+    return f
