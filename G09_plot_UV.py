@@ -35,6 +35,7 @@ parser.add_argument("-b", dest="begin", metavar="begin", help="beginning (in nm)
 parser.add_argument("-e", dest="end", metavar="end", help="end (in nm) of plot. Default: 800 nm", type=int, required=False, default=800)
 parser.add_argument("-p", dest="points", metavar="points", help="number of points in plot. Default: 8000", type=int, required=False, default=8000)
 parser.add_argument("-s", dest="save", metavar="save", help="file in which plot will be saved (optional)", required=False, default=None)
+parser.add_argument("-x", dest="shift", metavar="shift", help="the transition energies can be shifted by an amount in cm-1. Default: 0", required=False, default=0.0, type=float)
 parser.add_argument("-d", dest="data", help="should the sticks and plot data be saved? (optional)", required=False, default=None, action='store_true')
 parser.add_argument("-q", dest="quiet", help="by default a matplotlib window will appear, use -q to prevent this", required=False, default=None, action='store_true')
 parser.add_argument("-a", "--no-latex", dest="allergy", help="disable plotting with LaTeX", required=False, default=None, action='store_true')
@@ -46,6 +47,9 @@ smoothx = np.linspace(1e7 / args["begin"], 1e7 / args["end"], 150)
 
 # Files to be parsed
 parsed_input = cclib.parser.ccopen(args["file"]).parse()
+
+# If a shift has been applied, use it
+parsed_input.etenergies = parsed_input.etenergies + args["shift"]
 
 # Basename
 base_fname = args["file"].replace('.log', '')
@@ -59,8 +63,13 @@ for count, peak in enumerate(parsed_input.etenergies):
 composite_G_abs = np.transpose(composite_G_abs)
 
 if args["data"] is True:
-    stk_header = 'Excitation energies / cm-1 and oscillator strengths / dimensionless, extracted from {}'.format(args["file"])
-    plt_header = 'Convoluted UV/vis spectrum with Gaussians, FWHM = {}, from file {}.\nx = wavelength / nm\t\ty = epsilon / L mol-1 cm-1'.format(args["fwhm"], args["file"])
+    # Include shift in header if necessary
+    if args["shift"] != 0.0:
+        stk_header = 'Excitation energies / cm-1 (shifted by {} cm-1) and oscillator strengths / dimensionless, extracted from {}'.format(args["shift"], args["file"])
+        plt_header = 'Convoluted UV/vis spectrum with Gaussians, FWHM = {}, (transitions shifted by {} cm-1) from file {}.\nx = wavelength / nm\t\ty = epsilon / L mol-1 cm-1'.format(args["fwhm"], args["shift"], args["file"])
+    else:
+        stk_header = 'Excitation energies / cm-1 and oscillator strengths / dimensionless, extracted from {}'.format(args["file"])
+        plt_header = 'Convoluted UV/vis spectrum with Gaussians, FWHM = {}, from file {}.\nx = wavelength / nm\t\ty = epsilon / L mol-1 cm-1'.format(args["fwhm"], args["file"])
     stk_array = np.column_stack((parsed_input.etenergies, parsed_input.etoscs))
     plt_array = np.column_stack((1e7 / x, composite_G_abs))
     np.savetxt('{}.stk'.format(base_fname), stk_array, delimiter='\t', header=stk_header)
