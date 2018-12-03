@@ -22,8 +22,17 @@ def gradient(file):
 
         while line:
             reg_match = _G09_GRAD_reg(line)
+            # Orientation printed multiple times. Always use the last one.
+            if reg_match.INPO_flag:
+                # skip 5 lines
+                for N in range(5):
+                    line = next(incoming, None)
+                # Count lines until the end of the table is printed
+                atomcount = 0
+                while '------------' not in line:
+                    atomcount += 1
+                    line = next(incoming, None)
 
-            # Number of atoms needed later on
             if reg_match.SNO_flag:
                 # skip 5 lines
                 for N in range(5):
@@ -55,11 +64,13 @@ def gradient(file):
 
 class _G09_GRAD_reg:
     """ Regex for Gaussian 09 gradients """
-    _reg_nuclei_flag = re.compile(r'.*Standard orientation:.*')
+    _reg_nuclei_flag_SNO = re.compile(r'.*Standard orientation:.*')
+    _reg_nuclei_flag_INP = re.compile(r'.*Input orientation:.*')
     _reg_deriv_flag = re.compile(r'.*Forces \(Hartrees/Bohr.*')
 
-    __slots__ = ['SNO_flag', 'deriv_flag']
+    __slots__ = ['SNO_flag', 'INPO_flag', 'deriv_flag']
 
     def __init__(self, line):
-        self.SNO_flag = self._reg_nuclei_flag.match(line)
+        self.INPO_flag = self._reg_nuclei_flag_INP.match(line)
+        self.SNO_flag = self._reg_nuclei_flag_SNO.match(line)
         self.deriv_flag = self._reg_deriv_flag.match(line)
