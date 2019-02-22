@@ -21,13 +21,12 @@ angstrtobohr = 1.88973
 cmtoeV = 1 / 8000
 
 # Create a list of the files ending with .out in the working directory
-list = glob.glob("{}/*FC*.log".format(os.getcwd()))
+list = glob.glob("{}/*.log".format(os.getcwd()))
 
 # Create an array containing ccread objects of the files found
 files = []
 for i in range(0, len(list)):
-    incoming = cclib.parser.ccopen(i)
-    files.append(incoming.parse())
+    files.append(cclib.io.ccread(list[i]))
 
 # # Prepare the dictionary which will contain ccread objects with keys of Q
 # pointsdict = {}
