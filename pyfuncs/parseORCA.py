@@ -43,7 +43,7 @@ def SOCME(file):
                     socme_Y = np.complex(np.float(soc_line[13]), np.float(soc_line[15]))
                     socme_Z = np.complex(np.float(soc_line[3]), np.float(soc_line[5]))
                     socme_mag = np.real(np.linalg.norm([socme_X, socme_Y, socme_Z]))
-                    print('{}, {}: {}, {}, {}, {}'.format(current_triplet, current_singlet, socme_X, socme_Y, socme_Z, socme_mag))
+                    # print('{}, {}: {}, {}, {}, {}'.format(current_triplet, current_singlet, socme_X, socme_Y, socme_Z, socme_mag))
                     SOCME_x[current_triplet, current_singlet] = socme_X
                     SOCME_y[current_triplet, current_singlet] = socme_Y
                     SOCME_z[current_triplet, current_singlet] = socme_Z
