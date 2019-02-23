@@ -91,7 +91,7 @@ class _ORCA4100_SOCME_reg:
     """ Regex for Gaussian 09 gradients """
     _reg_NROOTS_flag = re.compile(r'.*Number of roots to be determined.*')
     _reg_SOCME_flag = re.compile(r'.*CALCULATED SOCME BETWEEN TRIPLETS AND SINGLETS*')
-    _reg_SF_states_flag = re.compile(r'\s\s+ABSORPTION SPECTRUM VIA TRANSITION ELECTRIC DIPOLE MOMENTS*')
+    _reg_SF_states_flag = re.compile(r'\s\s+ABSORPTION SPECTRUM VIA TRANSITION VELOCITY DIPOLE MOMENTS*')
 
     __slots__ = ['NROOTS_flag', 'SOCME_flag', 'SF_states_flag']
 
