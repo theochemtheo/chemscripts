@@ -1,6 +1,5 @@
 import numpy as np
 import re
-from parseFUNCS import *
 
 
 '''
@@ -16,6 +15,8 @@ def SOCME(file):
         x, y, z : x, y and z axis SOCME
         mag : normalized SOCME
         rows = T, columns = S
+        E_S, E_T : energies of singlet and triplet states
+        f_S, f_T : oscillator strengths of transitions to singlet or triplet states (0 by definition for triplets)
     """
 
     with open(file, 'r') as incoming:
@@ -50,7 +51,27 @@ def SOCME(file):
                     SOCME_mag[current_triplet, current_singlet] = socme_mag
                     line = next(incoming, None)
                     lines_done += 1
-
+            if reg_match.SF_states_flag:
+                line = next(incoming, None)
+                E_S = np.zeros(nroots)
+                E_T = np.zeros(nroots)
+                f_S = np.zeros(nroots)
+                # Skip some lines following match
+                for N in range(4):
+                    line = next(incoming, None)
+                lines_done = 0
+                while lines_done < nroots:
+                    singlets_line = line.split()
+                    E_S[lines_done] = singlets_line[1]
+                    f_S[lines_done] = singlets_line[3]
+                    line = next(incoming, None)
+                    lines_done += 1
+                lines_done = 0
+                while lines_done < nroots:
+                    triplets_line = line.split()
+                    E_T[lines_done] = triplets_line[1]
+                    line = next(incoming, None)
+                    lines_done += 1
             # End of regex
             line = next(incoming, None)
 
@@ -59,6 +80,10 @@ def SOCME(file):
     SOCME['y'] = SOCME_y
     SOCME['z'] = SOCME_z
     SOCME['mag'] = SOCME_mag
+    SOCME['E_S'] = E_S
+    SOCME['E_T'] = E_T
+    SOCME['f_S'] = f_S
+    SOCME['f_T'] = np.zeros(nroots)
 
     return SOCME
 
@@ -66,10 +91,12 @@ class _ORCA4100_SOCME_reg:
     """ Regex for Gaussian 09 gradients """
     _reg_NROOTS_flag = re.compile(r'.*Number of roots to be determined.*')
     _reg_SOCME_flag = re.compile(r'.*CALCULATED SOCME BETWEEN TRIPLETS AND SINGLETS*')
+    _reg_SF_states_flag = re.compile(r'\s\s+ABSORPTION SPECTRUM VIA TRANSITION ELECTRIC DIPOLE MOMENTS*')
 
-    __slots__ = ['NROOTS_flag', 'SOCME_flag']
+    __slots__ = ['NROOTS_flag', 'SOCME_flag', 'SF_states_flag']
 
     def __init__(self, line):
         self.NROOTS_flag = self._reg_NROOTS_flag.match(line)
         self.SOCME_flag = self._reg_SOCME_flag.match(line)
+        self.SF_states_flag = self._reg_SF_states_flag.match(line)
 
