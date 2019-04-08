@@ -11,8 +11,78 @@ parseFUNCS provides some generic functions used in the other parsing tools in th
 _bohrtoangstr = 0.529177210
 _hartreetoeV = 27.211386
 _hartreetocm = 2.194745313e5
+_hartreetoJoule = 4.359744650e-18
 _eVtocm = 8.065544e3
+_eVtoJoule = 1.6021766208e-19
+_cmtoJoule = 1.98645e-23
+_cmtoHertz = 2.99792458e10
 _daltontokg = 1.660539040e-27
+_Debyetoau = 0.393430307
+SI_speedoflight = 299792458
+SI_planck = 6.62607015e-34
+SI_hbar = 1.054571800e-34
+SI_vacuumperm = 8.854187817e-12
+SI_boltzmann = 1.38064852e-23
+
+
+def DebyetoCm(x):
+    converted = x * 1e-21 / SI_speedoflight
+    return converted
+
+
+def CmtoDebye(x):
+    converted = x * 1e22 * SI_speedoflight
+    return converted
+
+
+def Debyetoau(x):
+    converted = x * _Debyetoau
+    return converted
+
+
+def autoDebye(x):
+    converted = x / _Debyetoau
+    return converted
+
+
+def cmtoHertz(x):
+    converted = x * _cmtoHertz
+    return converted
+
+
+def Hertztocm(x):
+    converted = x / _cmtoHertz
+    return converted
+
+
+def cmtoJoule(x):
+    converted = x * _cmtoJoule
+    return converted
+
+
+def Jouletocm(x):
+    converted = x / _cmtoJoule
+    return converted
+
+
+def eVtoJoule(x):
+    converted = x * _eVtoJoule
+    return converted
+
+
+def JouletoeV(x):
+    converted = x / _eVtoJoule
+    return converted
+
+
+def hartreetoJoule(x):
+    converted = x * _hartreetoJoule
+    return converted
+
+
+def Jouletohartree(x):
+    converted = x / _hartreetoJoule
+    return converted
 
 
 def cmtoeV(x):
