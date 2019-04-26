@@ -47,6 +47,6 @@ if __name__ == '__main__':
             xyzfilename_prefix = stub
 
         for step, index in enumerate(converged_geoms):
-            xyzfilename = '{}_{}.xyz'.format(xyzfilename_prefix, step)
-            ccwrite(data, outputdest=xyzfilename, indices=index + 1, outputtype='xyz')
+            xyzfilename = '{}_{}.xyz'.format(xyzfilename_prefix, step + 1)
+            ccwrite(data, outputdest=xyzfilename, indices=index, outputtype='xyz')
 
